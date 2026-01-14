@@ -1,0 +1,68 @@
+{% extends 'admin_base.html' %} {% load static %} {% block content %}
+
+<div class="container">
+  <h2 class="mb-4"><i class="fas fa-plus-circle"></i>Create Student Class</h2>
+  {% if messages %}
+  {% for message in messages %}
+  <div
+    class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible fade show"
+    role="alert"
+    >
+    {{ message }}
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Close"
+    ></button>
+  </div>
+    {% endfor %}
+  {% endif %}
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="class_name" class="form-label"
+        ><i class="fas fa-chalkboard"></i> Class Name</label
+      >
+      <input
+        type="text"
+        class="form-control"
+        id="class_name"
+        name="class_name"
+        placeholder="Enter class name"
+        required
+        <small class="text-muted">e.g First, Second, Sixth</small>
+    </div>
+    <div class="mb-3">
+      <label for="class_name_numeric" class="form-label"
+        ><i class="fas fa-chalkboard"></i> Class Name in Numeric</label
+      >
+      <input
+        type="text"
+        class="form-control"
+        id="class_name_numeric"
+        name="class_name_numeric"
+        placeholder="Enter class name in numeric"
+        required
+        <small class="text-muted">e.g 1, 2, 6</small>
+    </div>
+    <div class="mb-3">
+      <label for="section" class="form-label"
+        ><i class="fas fa-chalkboard"></i> Section</label
+      >
+      <input
+        type="text"
+        class="form-control"
+        id="section"
+        name="section"
+        placeholder="Enter class name in numeric"
+        required
+        <small class="text-muted">e.g A, B, C</small>
+    </div>
+    <button type="submit" class="btn btn-success">
+      <i class="fas fa-save"></i> Create Class
+
+  </form>
+</div>
+
+{% endblock %}

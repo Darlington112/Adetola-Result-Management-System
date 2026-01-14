@@ -1,0 +1,138 @@
+{% extends 'admin_base.html' %} {% load static %} {% block content %}
+
+<div class="container">
+  <h2 class="mb-4"><i class="fas fa-user-plus"></i>Add Student</h2>
+  {% if messages %}
+  {% for message in messages %}
+  <div
+    class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible fade show"
+    role="alert"
+    >
+    {{ message }}
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Close"
+    ></button>
+  </div>
+    {% endfor %}
+  {% endif %}
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="fullname" class="form-label"
+        ><i class="fas fa-chalkboard"></i> FullName</label
+      >
+      <input
+        type="text"
+        class="form-control"
+        id="fullname"
+        name="fullname"
+        placeholder="Enter full name"
+        required
+        >
+       
+    </div>
+    <div class="mb-3">
+      <label for="rollID" class="form-label"
+        ><i class="fas fa-book"></i> Roll ID</label
+      >
+      <input
+        type="text"
+        class="form-control"
+        id="rollID"
+        name="rollID"
+        placeholder="Enter roll ID"
+        required
+        maxlength="5"
+        >
+    </div> 
+    <div class="mb-3">
+      <label for="email" class="form-label"
+        ><i class="fas fa-envelope"></i> Email</label
+      >
+      <input
+        type="email"
+        class="form-control"
+        id="email"
+        name="email"
+        placeholder="Enter email"
+        required
+        >
+
+    </div>
+    <div class="mb-3">
+      <label for="gender" class="form-label"> Gender</label
+      ><br/>
+      <div class='form-check form-check'>
+      <input
+        type="radio"
+        checked
+        class="form-check-input"
+        id="gender"
+        name="gender"
+        required
+        value="Male"
+        >
+        <label class="form-check-label">Male</label>
+     
+     </div>
+      <div class='form-check form-check'>
+      <input
+        type="radio"
+       
+        class="form-check-input"
+        id="gender"
+        name="gender"
+        required
+        value="Female"
+        >
+        <label class="form-check-label">Female</label>
+     
+     </div>
+
+    </div>
+
+
+   <div class="mb-3">
+      <label for="class" class="form-label"
+        ><i class="fas fa-chalkboard"></i> Select Class</label
+      >
+      <select
+        class="form-select"
+        id="class"
+        name="class"
+        required
+        >
+        <option value="" >-- Select Class --</option>
+        {% for class in classes %}
+        <option value="{{ class.id }}">{{ class.class_name }} - Section ({{ class.section }})</option>
+        {% endfor %}
+        
+        </select>
+    </div>
+
+     <div class="mb-3">
+      <label for="dob" class="form-label"
+        ><i class="fas fa-envelope"></i>Date of Birth</label
+      >
+      <input
+        type="date"
+        class="form-control"
+        id="dob"
+        name="dob"
+        required
+        >
+
+
+
+
+    
+    <button type="submit" class="btn btn-success">
+      <i class="fas fa-save"></i> Create Student
+
+  </form>
+</div>
+
+{% endblock %}

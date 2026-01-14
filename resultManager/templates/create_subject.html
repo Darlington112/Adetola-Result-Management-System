@@ -1,0 +1,57 @@
+{% extends 'admin_base.html' %} {% load static %} {% block content %}
+
+<div class="container">
+  <h2 class="mb-4"><i class="fas fa-book"></i>Create Student Subject</h2>
+  {% if messages %}
+  {% for message in messages %}
+  <div
+    class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible fade show"
+    role="alert"
+    >
+    {{ message }}
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Close"
+    ></button>
+  </div>
+    {% endfor %}
+  {% endif %}
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="subject_name" class="form-label"
+        ><i class="fas fa-chalkboard"></i> Subject Name</label
+      >
+      <input
+        type="text"
+        class="form-control"
+        id="subject_name"
+        name="subject_name"
+        placeholder="e.g Mathematics, English"
+        required
+        >
+       
+    </div>
+    <class="mb-3">
+      <label for="subject_code" class="form-label"
+        ><i class="fas fa-book"></i> Subject Code</label
+      >
+      <input
+        type="text"
+        class="form-control"
+        id="subject_code"
+        name="subject_code"
+        placeholder="e.g MATH101, ENG202"
+        required
+        >
+    </div> 
+    
+    <button type="submit" class="btn btn-success">
+      <i class="fas fa-save"></i> Create Subject
+
+  </form>
+</div>
+
+{% endblock %}
