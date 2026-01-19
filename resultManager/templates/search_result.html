@@ -38,7 +38,12 @@
               <label for="class_id" class="form-label"
                 ><i class="fas fa-chalkboard"></i> Select Class</label
               >
-              <select class="form-select" id="class_id" name="class_id" required>
+              <select
+                class="form-select"
+                id="class_id"
+                name="class_id"
+                required
+              >
                 <option value="">-- Select Class --</option>
                 {% for class in classes %}
                 <option value="{{ class.id }}">

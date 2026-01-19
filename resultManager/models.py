@@ -4,7 +4,6 @@ from django.db import models
 
 class Class(models.Model):
     class_name = models.CharField(max_length=100)
-    class_numeric = models.IntegerField()
     section = models.CharField(max_length=20)
     creation_date = models.DateTimeField(auto_now_add=True)
     updation_date = models.DateTimeField(auto_now=True)
@@ -66,12 +65,30 @@ class Result(models.Model):
     student_class = models.ForeignKey(Class, on_delete=models.SET_NULL, null=True)
     subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, null=True)
     marks = models.IntegerField()
+    grade = models.CharField(max_length=2, blank=True)
     posting_date = models.DateTimeField(auto_now_add=True)
     updation_date = models.DateTimeField(auto_now=True)
-   
+
+    def save(self, *args, **kwargs):
+     self.marks = int(self.marks)  # ✅ FIX
+
+     if self.marks >= 70:
+        self.grade = 'A'
+     elif self.marks >= 60:
+        self.grade = 'B'
+     elif self.marks >= 50:
+        self.grade = 'C'
+     elif self.marks >= 45:
+        self.grade = 'D'
+     else:
+        self.grade = 'F'
+
+     super().save(*args, **kwargs)
+
+
     def __str__(self):
-        return f"{self.student} - {self.subject} - {self.marks}"
-    
+        return f"{self.student} - {self.subject} - {self.marks} ({self.grade})"
+
 class Notice(models.Model):
    title = models.CharField(max_length=200)
    details = models.TextField()

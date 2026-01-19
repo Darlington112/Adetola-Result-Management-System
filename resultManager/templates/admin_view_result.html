@@ -1,0 +1,40 @@
+{% extends "base.html" %} {% block content %}
+
+<div class="container mt-4">
+  <div class="card shadow">
+    <div class="card-header bg-dark text-white">
+      <h5>Result for {{ student.name }}</h5>
+    </div>
+
+    <div class="card-body">
+      <table class="table table-bordered">
+        <thead class="table-secondary">
+          <tr>
+            <th>Subject</th>
+            <th>Score</th>
+            <th>Grade</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for result in results %}
+          <tr>
+            <td>{{ result.subject.subject_name }}</td>
+            <td>{{ result.marks }}</td>
+            <td>{{ result.grade }}</td>
+          </tr>
+          {% empty %}
+
+          <tr>
+            <td colspan="3" class="text-center text-danger">
+              No result available
+            </td>
+          </tr>
+          {% endfor %}
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

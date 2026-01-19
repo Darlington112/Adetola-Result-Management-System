@@ -51,9 +51,9 @@ def create_class(request):
     if request.method == 'POST':
         try:
            class_name = request.POST.get('class_name')
-           class_numeric = request.POST.get('class_name_numeric')
            section = request.POST.get('section')
-           Class.objects.create(class_name=class_name, class_numeric=class_numeric, section=section)
+          
+           Class.objects.create(class_name=class_name, section=section)  
            messages.success(request, "Class created successfully.")
            return redirect(create_class)
 
@@ -342,7 +342,7 @@ def add_result(request):
            messages.success(request, "Result info added successfully.")
 
         except Exception as e:
-            messages.error(request, f"Error creating Subject.{str(e)}")  
+            messages.error(request, f"Error declaring result.{str(e)}")  
             return redirect(add_result)
     return render(request, 'add_result.html', locals())
 
@@ -466,3 +466,15 @@ def check_result(request):
         except Exception as e:
              messages.error(request, "No results found for the given Roll ID and Class") 
              return redirect('search_result')
+        
+
+@login_required(login_url='admin_login')
+def admin_view_result(request, student_id):
+    student = get_object_or_404(Student, id=student_id)
+    results = Result.objects.filter(student=student)
+
+    context = {
+        'student': student,
+        'results': results
+    }
+    return render(request, 'admin_view_result.html', context)        

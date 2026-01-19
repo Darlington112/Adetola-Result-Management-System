@@ -37,6 +37,8 @@
                   <th>#</th>
                   <th>Subject</th>
                   <th>Marks Obtained</th>
+                  <th>Grades</th>
+
                 </tr>
               </thead>
               <tbody>
@@ -45,6 +47,7 @@
                   <td>{{forloop.counter}}</td>
                   <td>{{ result.subject.subject_name }}</td>
                   <td>{{ result.marks }}</td>
+                  <td>{{ result.grade }}</td>
                 </tr>
 
                 {% endfor %}

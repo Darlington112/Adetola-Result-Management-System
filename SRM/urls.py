@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 
 from resultManager.views import index
-from resultManager.views import admin_login, admin_dashboard, create_class, admin_logout, manage_classes, edit_class, create_subject, manage_subject, edit_subject, add_subject_combination, manage_subject_combination, add_student, manage_student, edit_student, add_notice, manage_notice, add_result, get_students_subjects, manage_result,edit_result, change_password, search_result, check_result, notice_detail
+from resultManager.views import admin_login, admin_dashboard, create_class, admin_logout, manage_classes, edit_class, create_subject, manage_subject, edit_subject, add_subject_combination, manage_subject_combination, add_student, manage_student, edit_student, add_notice, manage_notice, add_result, get_students_subjects, manage_result,edit_result, change_password, search_result, check_result, notice_detail, admin_view_result
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -48,6 +48,8 @@ urlpatterns = [
      path('search_result/',search_result, name='search_result'),
      path('check_result/',check_result, name='check_result'),
      path('notice_detail/<int:notice_id>/',notice_detail, name='notice_detail'),
+     path('admin_view_result/<int:student_id>/', admin_view_result, name='admin_view_result')
+
      
 
 ]
