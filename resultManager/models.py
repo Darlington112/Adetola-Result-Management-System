@@ -64,30 +64,57 @@ class Result(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     student_class = models.ForeignKey(Class, on_delete=models.SET_NULL, null=True)
     subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, null=True)
-    marks = models.IntegerField()
+
+    test_marks = models.IntegerField(default=0)
+
+    exam_marks = models.IntegerField(default=0)
+    total_marks = models.IntegerField(default=0,editable=False)
+
     grade = models.CharField(max_length=2, blank=True)
+    status = models.CharField(max_length=4, blank=True)  # Pass / Fail
+
     posting_date = models.DateTimeField(auto_now_add=True)
     updation_date = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
-     self.marks = int(self.marks)  # ✅ FIX
+        self.test_marks = int(self.test_marks)
+        self.exam_marks = int(self.exam_marks)
 
-     if self.marks >= 70:
-        self.grade = 'A'
-     elif self.marks >= 60:
-        self.grade = 'B'
-     elif self.marks >= 50:
-        self.grade = 'C'
-     elif self.marks >= 45:
-        self.grade = 'D'
-     else:
-        self.grade = 'F'
+        # Total
+        self.total_marks = self.test_marks + self.exam_marks
 
-     super().save(*args, **kwargs)
+        # Grade
+        if self.total_marks >= 75:
+            self.grade = 'A1'
+        elif self.total_marks >= 70:
+            self.grade = 'B2'
+        elif self.total_marks >= 65:
+            self.grade = 'B3'
+        elif self.total_marks >= 60:
+            self.grade = 'C4'
+        elif self.total_marks >= 55:
+            self.grade = 'C5'
+        elif self.total_marks >= 50:
+            self.grade = 'C6'
+        elif self.total_marks >= 45:
+            self.grade = 'D7'
+        elif self.total_marks >= 40:
+            self.grade = 'E8'
+        else:
+            self.grade = 'F'
 
+        # Pass / Fail
+        self.status = 'Pass' if self.total_marks >= 39 else 'Fail'
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.student} - {self.subject} - {self.marks} ({self.grade})"
+        return (
+            f"{self.student} - {self.subject} | "
+            f"Total: {self.total_marks}, "
+            f"Grade: {self.grade}, "
+            f"Status: {self.status}"
+        )
 
 class Notice(models.Model):
    title = models.CharField(max_length=200)

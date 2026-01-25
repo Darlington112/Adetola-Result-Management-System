@@ -1,4 +1,5 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %}
+{% block content %}
 
 <div class="container mt-4">
   <div class="card shadow">
@@ -7,31 +8,43 @@
     </div>
 
     <div class="card-body">
-      <table class="table table-bordered">
+      <table class="table table-bordered table-hover">
         <thead class="table-secondary">
           <tr>
             <th>Subject</th>
-            <th>Score</th>
+            <th>C.A (40)</th>
+            <th>Exam (60)</th>
+            <th>Total</th>
             <th>Grade</th>
+            <th>Status</th>
           </tr>
         </thead>
+
         <tbody>
           {% for result in results %}
-          <tr>
-            <td>{{ result.subject.subject_name }}</td>
-            <td>{{ result.marks }}</td>
-            <td>{{ result.grade }}</td>
-          </tr>
+            <tr>
+              <td>{{ result.subject.subject_name }}</td>
+              <td>{{ result.test_marks }}</td>
+              <td>{{ result.exam_marks }}</td>
+              <td><strong>{{ result.total_marks }}</strong></td>
+              <td>{{ result.grade }}</td>
+              <td>
+                {% if result.status == "Pass" %}
+                  <span class="badge bg-success">Pass</span>
+                {% else %}
+                  <span class="badge bg-danger">Fail</span>
+                {% endif %}
+              </td>
+            </tr>
           {% empty %}
-
-          <tr>
-            <td colspan="3" class="text-center text-danger">
-              No result available
-            </td>
-          </tr>
+            <tr>
+              <td colspan="6" class="text-center text-danger">
+                No result available
+              </td>
+            </tr>
           {% endfor %}
-          </tr>
         </tbody>
+
       </table>
     </div>
   </div>

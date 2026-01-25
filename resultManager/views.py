@@ -326,26 +326,42 @@ def manage_notice(request):
 def add_result(request):
     classes = Class.objects.all()
     subjects = Subject.objects.all()
+
     if request.method == 'POST':
         try:
-           class_id = request.POST.get('class_id')
-           student_id = request.POST.get('student_id')
-           marks_data = {key.split('_')[1]: value for key, value in request.POST.items() if key.startswith('marks_')}
+            class_id = request.POST.get('class_id')
+            student_id = request.POST.get('student_id')
 
-           for subject_id, marks in marks_data.items():
-               Result.objects.create(
-                   student_id=student_id,
-                   subject_id=subject_id,
-                   student_class_id=class_id,
-                   marks=marks
-               )
-           messages.success(request, "Result info added successfully.")
+            # Extract test & exam marks per subject
+            test_data = {
+                key.split('_')[1]: value
+                for key, value in request.POST.items()
+                if key.startswith('test_')
+            }
+
+            exam_data = {
+                key.split('_')[1]: value
+                for key, value in request.POST.items()
+                if key.startswith('exam_')
+            }
+
+            for subject_id in test_data:
+                Result.objects.create(
+                    student_id=student_id,
+                    student_class_id=class_id,
+                    subject_id=subject_id,
+                    test_marks=test_data.get(subject_id, 0),
+                    exam_marks=exam_data.get(subject_id, 0),
+                )
+
+            messages.success(request, "Result info added successfully.")
+            return redirect('add_result')
 
         except Exception as e:
-            messages.error(request, f"Error declaring result.{str(e)}")  
-            return redirect(add_result)
-    return render(request, 'add_result.html', locals())
+            messages.error(request, f"Error declaring result: {str(e)}")
+            return redirect('add_result')
 
+    return render(request, 'add_result.html', locals())
 
 from django.http import JsonResponse
 
@@ -383,33 +399,29 @@ def manage_result(request):
                 'status': res.student.status,
             }
 
-        
-
-
-    
     return render(request, 'manage_result.html', {'results': students.values()})
 
 
 @login_required(login_url='admin_login')
 def edit_result(request, stid):
-     
-     student = get_object_or_404(Student, id=stid)
-     results = Result.objects.filter(student = student)
-     if request.method == 'POST':
-         ids = request.POST.getlist('id[]') #id[]: [5,6,7]
-         marks = request.POST.getlist('marks[]') #marks[]: [80,90,70]
+    student = get_object_or_404(Student, id=stid)
+    results = Result.objects.filter(student=student)
 
-         for i in range(len(ids)):
-             result_obj = get_object_or_404(Result, id=ids[i])
-             result_obj.marks = marks[i]
-             result_obj.save()
+    if request.method == 'POST':
+        ids = request.POST.getlist('id[]')
+        test_marks = request.POST.getlist('test_marks[]')
+        exam_marks = request.POST.getlist('exam_marks[]')
 
-         messages.success(request, "Result updated successfully.")    
-        #  return redirect('edit_result', stid=stid) 
-         return redirect(manage_result)
-     
-     return render(request, 'edit_result.html', locals())
+        for i in range(len(ids)):
+            result_obj = get_object_or_404(Result, id=ids[i])
+            result_obj.test_marks = test_marks[i]
+            result_obj.exam_marks = exam_marks[i]
+            result_obj.save()  # recalculates total & grade
 
+        messages.success(request, "Result updated successfully.")
+        return redirect('manage_result')
+
+    return render(request, 'edit_result.html', locals())
 
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
@@ -451,22 +463,37 @@ def search_result(request):
 
 
 def check_result(request):
-     if request.method == 'POST': 
-        rollid = request.POST.get('rollid') 
-        class_id = request.POST.get('class_id') 
-        try: 
-            student = Student.objects.get(roll_id=rollid, student_class_id=class_id)
-            results = Result.objects.filter(student=student) 
-            total_marks = sum(result.marks for result in results) 
-            subject_count = results.count() 
+    if request.method == 'POST':
+        rollid = request.POST.get('rollid')
+        class_id = request.POST.get('class_id')
+
+        try:
+            student = Student.objects.get(
+                roll_id=rollid,
+                student_class_id=class_id
+            )
+
+            results = Result.objects.filter(student=student).only('total_marks', 'status')
+
+
+            total_marks = sum(r.total_marks for r in results)
+            subject_count = results.count()
             max_total = subject_count * 100
-            percentage = (total_marks / max_total) * 100 if max_total > 0 else 0 
-            percentage = round(percentage,2)
-            return render(request, 'result_page.html', locals()) 
-        except Exception as e:
-             messages.error(request, "No results found for the given Roll ID and Class") 
-             return redirect('search_result')
-        
+
+            percentage = (total_marks / max_total) * 100 if max_total > 0 else 0
+            percentage = round(percentage, 2)
+
+            # Overall Pass / Fail
+            overall_status = (
+                "Pass" if all(r.status == "Pass" for r in results) else "Fail"
+            )
+
+            return render(request, 'result_page.html', locals())
+
+        except Student.DoesNotExist:
+            messages.error(request, "No results found for the given Roll ID and Class")
+            return redirect('search_result')
+
 
 @login_required(login_url='admin_login')
 def admin_view_result(request, student_id):

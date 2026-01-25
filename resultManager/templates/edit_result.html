@@ -1,85 +1,111 @@
-{% extends 'admin_base.html' %} {% load static %} {% block content %}
+{% extends 'admin_base.html' %}
+{% load static %}
+{% block content %}
 
 <div class="container">
-  <h2 class="mb-4"><i class="fas fa-edit"></i>Edit Student Result - {{student.name}}</h2>
+  <h2 class="mb-4">
+    <i class="fas fa-edit"></i> Edit Student Result - {{ student.name }}
+  </h2>
+
   {% if messages %}
-  {% for message in messages %}
-  <div
-    class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible fade show"
-    role="alert"
-    >
-    {{ message }}
-    <button
-      type="button"
-      class="btn-close"
-      data-bs-dismiss="alert"
-      aria-label="Close"
-    ></button>
-  </div>
+    {% for message in messages %}
+      <div
+        class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show"
+        role="alert"
+      >
+        {{ message }}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
+      </div>
     {% endfor %}
   {% endif %}
+
   <form method="post" class="card p-4 shadow-sm">
     {% csrf_token %}
+
+    <!-- Class -->
     <div class="mb-3">
-      <label for="class_name" class="form-label"
-        ><i class="fas fa-chalkboard"></i><strong> Class Name:</strong></label
-      >
+      <label class="form-label">
+        <i class="fas fa-chalkboard"></i>
+        <strong>Class:</strong>
+      </label>
       <div>
-       {{student.student_class.class_name}} -  {{student.student_class.section}}
+        {{ student.student_class.class_name }} -
+        {{ student.student_class.section }}
       </div>
-    
     </div>
+
+    <!-- Student -->
     <div class="mb-3">
-      <label for="class_name_numeric" class="form-label"
-        ><i class="fas fa-chalkboard"></i> <strong>Full Name:</strong></label
-      >
-         <div>
-       {{student.name}} 
-      </div>
+      <label class="form-label">
+        <i class="fas fa-user"></i>
+        <strong>Full Name:</strong>
+      </label>
+      <div>{{ student.name }}</div>
     </div>
+
     <h5 class="mt-4">Subjects and Marks</h5>
+
     <div class="row">
-        {% for res in results %}
+      {% for res in results %}
         <div class="col-md-6">
-            <div class="mb-3">
-                <label class="form-label"
-                ><i class="fas fa-book"></i> <strong>{{res.subject.subject_name}}:</strong></label
-                >
-                <input type="hidden" name="id[]" value="{{res.id}}">
+          <div class="mb-3">
+            <label class="form-label fw-bold">
+              <i class="fas fa-book"></i>
+              {{ res.subject.subject_name }}
+            </label>
+
+            <input type="hidden" name="id[]" value="{{ res.id }}">
+
+            <div class="row">
+              <div class="col-6">
                 <input
-                type="number"
-                class="form-control"
-                id=""
-                name="marks[]"
-                value="{{res.marks}}"
-                required
-                />
+                  type="number"
+                  class="form-control"
+                  name="test_marks[]"
+                  value="{{ res.test_marks }}"
+                  placeholder="Test"
+                  min="0"
+                  required
+                >
+              </div>
+
+              <div class="col-6">
+                <input
+                  type="number"
+                  class="form-control"
+                  name="exam_marks[]"
+                  value="{{ res.exam_marks }}"
+                  placeholder="Exam"
+                  min="0"
+                  required
+                >
+              </div>
             </div>
 
+            <small class="text-muted">
+              Total: {{ res.total_marks }} |
+              Grade: {{ res.grade }} |
+              Status:
+              {% if res.status == "Pass" %}
+                <span class="text-success fw-bold">Pass</span>
+              {% else %}
+                <span class="text-danger fw-bold">Fail</span>
+              {% endif %}
+            </small>
+          </div>
         </div>
-        {% endfor %}
-
+      {% endfor %}
     </div>
+
     <button type="submit" class="btn btn-success">
       <i class="fas fa-save"></i> Update Result
-
+    </button>
   </form>
 </div>
-
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const form = document.querySelectorAll('form');
-        form.addEventListener('submit', ()=>{
-            const ids = form.querySelectorAll('input[name="id"]');
-            const marks = form.querySelectorAll('input[name="marks"]');
-
-            ids.forEach(input=>input.name = "id[]");
-            marks.forEach(input=>input.name = "marks[]");
-
-        })
-        
-    });
-</script>
 
 {% endblock %}
