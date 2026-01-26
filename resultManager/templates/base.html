@@ -23,7 +23,7 @@
     />
     <title>Adetola Private School SRM</title>
   </head>
-  <body>
+  <body class="d-flex flex-column min-vh-100">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
       <div class="container-fluid">
         <a class="navbar-brand" href="#"
@@ -47,21 +47,23 @@
               <a
                 class="nav-link active"
                 aria-current="page"
-                href=""
+                href="{% url 'index' %}"
                 >Home</a
-              >{% url 'index' %}
+              >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'search_result' %}">Student Result</a>
+              <a class="nav-link" href="{% url 'search_result' %}"
+                >Student Result</a
+              >
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <a class="nav-link" href="{% url 'admin_login' %}">Admin</a>
-            </li>
+            </li> -->
           </ul>
         </div>
       </div>
     </nav>
-    {% block content %} {% endblock %}
+    <main class="flex-fill">{% block content %}{% endblock %}</main>
 
     <footer class="mt-5">
       <div class="bg-dark text-white text-center py-3">
