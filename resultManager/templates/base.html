@@ -25,11 +25,14 @@
   </head>
   <body class="d-flex flex-column min-vh-100">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#"
-          ><i class="fas fa-school me-1"></i>Adetola Schools Result Management
-          System</a
-        >
+      <div class="container">
+        <a class="navbar-brand fw-semibold" href="#">
+          <i class="fas fa-school me-2"></i>
+          <span class="d-none d-md-inline"
+            >Adetola Schools Result Management System</span
+          >
+          <span class="d-md-none">Adetola SRM</span>
+        </a>
         <button
           class="navbar-toggler"
           type="button"
@@ -42,7 +45,7 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0 justify-content-end w-100">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
             <li class="nav-item">
               <a
                 class="nav-link active"
@@ -56,16 +59,16 @@
                 >Student Result</a
               >
             </li>
-            <!-- <li class="nav-item">
+            <li class="nav-item">
               <a class="nav-link" href="{% url 'admin_login' %}">Admin</a>
-            </li> -->
+            </li>
           </ul>
         </div>
       </div>
     </nav>
     <main class="flex-fill">{% block content %}{% endblock %}</main>
 
-    <footer class="mt-5">
+    <footer class="mt-auto">
       <div class="bg-dark text-white text-center py-3">
         <p class="mb-0">
           &copy; 2026 Adetola Private Schools. All rights reserved.
